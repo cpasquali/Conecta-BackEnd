@@ -5,11 +5,15 @@ import commentRoutes from "./routes/commentsRoutes.js";
 import postLikesRoutes from "./routes/postLikesRoutes.js";
 import userFollowersRoutes from "./routes/userFollowers.js";
 import cors from "cors";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+console.log(process.env.MYSQL_URL);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "Server andando" });
