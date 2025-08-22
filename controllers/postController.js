@@ -85,7 +85,7 @@ export const createPost = async (req, res) => {
     }
 
     const query =
-      "INSERT INTO Posts (user_id,title,description) VALUES (?,?,?)";
+      "INSERT INTO posts (user_id,title,description) VALUES (?,?,?)";
 
     const values = [userId, title, description];
 
@@ -115,7 +115,7 @@ export const deletePost = async (req, res) => {
   const { id, userId } = req.params;
   try {
     const [rows] = await db.query(
-      "SELECT * FROM Posts WHERE id = ? AND user_id = ?",
+      "SELECT * FROM posts WHERE id = ? AND user_id = ?",
       [id, userId]
     );
 
@@ -125,7 +125,7 @@ export const deletePost = async (req, res) => {
       return res.status(404).json({ message: "Post no encontrado" });
     }
 
-    await db.query("DELETE FROM Posts WHERE id = ? AND user_id = ?", [
+    await db.query("DELETE FROM posts WHERE id = ? AND user_id = ?", [
       id,
       userId,
     ]);

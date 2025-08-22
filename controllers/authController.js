@@ -43,7 +43,7 @@ export const register = async (req, res) => {
   try {
     const { first_name, last_name, username, email, password } = req.body;
 
-    const [rowEmail] = await db.query("SELECT * FROM Users WHERE email = ?", [
+    const [rowEmail] = await db.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
 
@@ -52,7 +52,7 @@ export const register = async (req, res) => {
     }
 
     const [rowUsername] = await db.query(
-      "SELECT * FROM Users WHERE username = ?",
+      "SELECT * FROM users WHERE username = ?",
       [username]
     );
 
@@ -67,7 +67,7 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const query =
-      "INSERT INTO Users (first_name, last_name,username,email,password) VALUES (? ,? ,? ,? ,?)";
+      "INSERT INTO users (first_name, last_name,username,email,password) VALUES (? ,? ,? ,? ,?)";
 
     const values = [first_name, last_name, username, email, hashedPassword];
 
