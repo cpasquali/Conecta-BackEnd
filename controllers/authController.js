@@ -34,6 +34,7 @@ export const login = async (req, res) => {
       user: user,
     });
   } catch (e) {
+    console.log(e.message);
     return res.status(500).json({ message: `${e.message}` });
   }
 };
@@ -74,6 +75,7 @@ export const register = async (req, res) => {
 
     return res.status(201).json({ message: "Usuario creado con exito" });
   } catch (e) {
+    console.log(e.message);
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };

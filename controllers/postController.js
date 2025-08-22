@@ -106,6 +106,7 @@ export const createPost = async (req, res) => {
       .status(200)
       .json({ newPost: rows[0], message: "Post creado con exito" });
   } catch (e) {
+    console.log(e.message);
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
@@ -131,6 +132,7 @@ export const deletePost = async (req, res) => {
 
     return res.status(200).json({ message: "Post eliminado con exito" });
   } catch {
+    console.log(e.message);
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
