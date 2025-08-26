@@ -32,7 +32,16 @@ export const createComment = async (req, res) => {
 
     await db.query(query, values);
 
-    return res.status(201).json({ message: "Comentario creado con exito" });
+    const [rows] = await db.query(
+      "SELECT * FROM comments WHERE post_id = ? AND user_id = ? AND description = ?",
+      [postId, userId, description]
+    );
+
+    const newComment = rows[0];
+
+    return res
+      .status(201)
+      .json({ message: "Comentario creado con exito", newComment: newComment });
   } catch (e) {
     return res.status(500).json({ error: e, message: "Error en el servidor" });
   }
