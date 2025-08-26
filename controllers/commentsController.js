@@ -33,7 +33,7 @@ export const createComment = async (req, res) => {
     await db.query(query, values);
 
     const [rows] = await db.query(
-      "SELECT * FROM comments WHERE post_id = ? AND user_id = ? AND description = ?",
+      "SELECT c.*, u.first_name, u.last_name, u.username FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE post_id = ? AND user_id = ? AND description = ?",
       [postId, userId, description]
     );
 
