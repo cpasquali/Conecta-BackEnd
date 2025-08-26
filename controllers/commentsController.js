@@ -4,7 +4,7 @@ export const getCommentPost = async (req, res) => {
   const { postId } = req.params;
   try {
     const [rows] = await db.query(
-      "SELECT c.id,c.post_id,c.user_id,u.first_name,u.last_name,u.username,c.description,c.created_at FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE c.post_Id = ?",
+      "SELECT c.id,c.post_id,c.user_id,u.first_name,u.last_name,u.username,c.description,c.created_at FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE c.post_Id = ? ORDER BY created_at desc",
       [postId]
     );
 
