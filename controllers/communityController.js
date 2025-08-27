@@ -16,13 +16,11 @@ export const getAllCommunitys = async (req, res) => {
     const [rows] = await db.query(query, values);
 
     if (!rows.length) {
-      return res
-        .status(400)
-        .json({
-          message: name
-            ? "No se encontro comunidad con ese nombre..."
-            : "No encontraron comunidades...",
-        });
+      return res.status(200).json({
+        message: name
+          ? "No se encontro comunidad con ese nombre..."
+          : "No encontraron comunidades...",
+      });
     }
 
     return res.status(200).json({ communities: rows });

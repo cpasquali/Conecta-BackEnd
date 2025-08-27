@@ -73,7 +73,16 @@ export const register = async (req, res) => {
 
     await db.query(query, values);
 
-    return res.status(201).json({ message: "Usuario creado con exito" });
+    const [row] = await db.query(
+      "SELECT * FROM users WHERE email = ? AND username = ?",
+      [email, username]
+    );
+
+    const newUser = row[0];
+
+    return res
+      .status(201)
+      .json({ message: "Usuario creado con exito", newUser: newUser });
   } catch (e) {
     console.log(e.message);
     return res.status(500).json({ message: "Error en el servidor" });
