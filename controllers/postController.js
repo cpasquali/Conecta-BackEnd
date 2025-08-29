@@ -1,4 +1,6 @@
 import db from "../db/db.js";
+import cloudinary from "../utils/cloudinary.js";
+import fs from "fs";
 
 export const getAllPosts = async (req, res) => {
   try {
@@ -78,6 +80,12 @@ export const createPost = async (req, res) => {
   try {
     const { title, description } = req.body;
 
+    const imageResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "posts",
+    });
+
+    const image_url = imageResult.secure_url;
+
     if (!title || !description) {
       return res
         .status(400)
@@ -85,9 +93,9 @@ export const createPost = async (req, res) => {
     }
 
     const query =
-      "INSERT INTO posts (user_id,title,description) VALUES (?,?,?)";
+      "INSERT INTO posts (user_id,title,description,image_url) VALUES (?,?,?,?)";
 
-    const values = [userId, title, description];
+    const values = [userId, title, description, image_url];
 
     const [result] = await db.query(query, values);
 
@@ -101,6 +109,10 @@ export const createPost = async (req, res) => {
         WHERE p.id = ? AND user_id = ?`,
       [result.insertId, userId]
     );
+
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.log("Error al intentar borrar el archivo temporal");
+    });
 
     return res
       .status(200)

@@ -12,8 +12,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-console.log(process.env.MYSQL_URL);
-
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "Server andando" });
 });
