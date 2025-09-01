@@ -2,7 +2,9 @@ import db from "../db/db.js";
 import bcrypt from "bcrypt";
 
 export const getAllUsers = async (req, res) => {
-  const { username } = req.query;
+  const { username, email } = req.query;
+  console.log(email);
+
   try {
     let query = `SELECT 
         u.*,
@@ -19,6 +21,9 @@ export const getAllUsers = async (req, res) => {
     if (username) {
       query += " WHERE username LIKE ?";
       values.push(`${username}%`);
+    } else if (email) {
+      query += " WHERE email LIKE ?";
+      values.push(`${email}%`);
     } else {
       query += " ORDER BY RAND()";
     }
@@ -26,7 +31,7 @@ export const getAllUsers = async (req, res) => {
     const [rows] = await db.query(query, values);
 
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         message: username
           ? `No hay resultados para la busqueda...`
           : "No hay usuarios registrados",

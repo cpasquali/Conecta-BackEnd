@@ -80,11 +80,19 @@ export const createPost = async (req, res) => {
   try {
     const { title, description } = req.body;
 
-    const imageResult = await cloudinary.uploader.upload(req.file.path, {
-      folder: "posts",
-    });
+    let image_url = null;
 
-    const image_url = imageResult.secure_url;
+    if (req.file) {
+      const resultImage = await cloudinary.uploader.upload(req.file.path, {
+        folder: "posts",
+      });
+
+      image_url = resultImage.secure_url;
+
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.log("Error al intentar borrar el archivo temporal");
+      });
+    }
 
     if (!title || !description) {
       return res
@@ -109,10 +117,6 @@ export const createPost = async (req, res) => {
         WHERE p.id = ? AND user_id = ?`,
       [result.insertId, userId]
     );
-
-    fs.unlink(req.file.path, (err) => {
-      if (err) console.log("Error al intentar borrar el archivo temporal");
-    });
 
     return res
       .status(200)

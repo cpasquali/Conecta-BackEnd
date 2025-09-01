@@ -9,7 +9,9 @@ export const getCommentPost = async (req, res) => {
     );
 
     return res.status(200).json({ comments: rows });
-  } catch {
+  } catch (e) {
+    console.log(e.message);
+
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
