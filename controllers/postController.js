@@ -1,3 +1,4 @@
+import { log } from "console";
 import db from "../db/db.js";
 import cloudinary from "../utils/cloudinary.js";
 import fs from "fs";
@@ -15,7 +16,7 @@ export const getAllPosts = async (req, res) => {
     const [rowss] = await db.query(query);
 
     if (rowss.length === 0) {
-      return res.status(404).json({ message: "No hay posts registrados" });
+      return res.status(200).json({ message: "No hay posts registrados" });
     }
 
     return res.status(200).json({ posts: rowss });
@@ -44,13 +45,14 @@ export const getAllPostByUserId = async (req, res) => {
     );
 
     if (rowss.length === 0) {
-      return res.status(404).json({
-        message: `No hay post registrados por el usuario con id ${id}`,
+      return res.status(200).json({
+        message: `No hay post registrados por el usuario con id ${userId}`,
       });
     }
 
     return res.status(200).json({ posts: rowss });
-  } catch {
+  } catch (e) {
+    console.log(e.message);
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };

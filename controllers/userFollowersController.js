@@ -23,8 +23,6 @@ export const addFollow = async (req, res) => {
       [id_user_following, id_user_follower]
     );
 
-    console.log("e");
-
     return res.status(201).json({ message: "Usuario seguido con exito" });
   } catch (e) {
     return res.status(500).json({ mesage: "Error en el servidor" });

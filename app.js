@@ -4,7 +4,6 @@ import postRoutes from "./routes/postRoutes.js";
 import commentRoutes from "./routes/commentsRoutes.js";
 import postLikesRoutes from "./routes/postLikesRoutes.js";
 import userFollowersRoutes from "./routes/userFollowers.js";
-import communityRoutes from "./routes/communityRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -21,7 +20,6 @@ app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
 app.use("/likes", postLikesRoutes);
 app.use("/userFollowers", userFollowersRoutes);
-app.use("/communities", communityRoutes);
 
 app.listen(3000, () => {
   console.log(3000, "Servidor conectado en el puerto http://localhost:3000");
