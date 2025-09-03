@@ -5,7 +5,7 @@ import fs from "fs";
 export const getAllPosts = async (req, res) => {
   try {
     const query = `SELECT p.*,
-	    u.first_name,u.last_name,u.username,	
+	    u.first_name,u.last_name,u.username,u.image_url AS profile_img,
 	    (SELECT COUNT(*) FROM
 	    post_likes 
 	    WHERE post_id = p.id) AS cant_likes
@@ -19,7 +19,9 @@ export const getAllPosts = async (req, res) => {
     }
 
     return res.status(200).json({ posts: rowss });
-  } catch {
+  } catch (e) {
+    console.log(e.message);
+
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
@@ -30,7 +32,7 @@ export const getAllPostByUserId = async (req, res) => {
   try {
     const [rowss] = await db.query(
       `SELECT p.*,
-    	  u.first_name,u.last_name,u.username,	
+    	  u.first_name,u.last_name,u.username,u.image_url AS profile_img,
 	      (SELECT COUNT(*) FROM
 	      post_likes 
 	      WHERE post_id = p.id) AS cant_likes
@@ -58,7 +60,7 @@ export const getPostById = async (req, res) => {
   try {
     const [rows] = await db.query(
       `SELECT p.*,
-	      u.first_name,u.last_name,u.username,	
+	      u.first_name,u.last_name,u.username,u.image_url AS profile_img,
 	      (SELECT COUNT(*) FROM
 	      post_likes 
 	      WHERE post_id = p.id) AS cant_likes
@@ -109,7 +111,7 @@ export const createPost = async (req, res) => {
 
     const [rows] = await db.query(
       `SELECT p.*,
-	u.first_name,u.last_name,u.username,	
+	u.first_name,u.last_name,u.username, u.image_url AS profile_img,	
 		(SELECT COUNT(*) FROM
 	      post_likes 
 	      WHERE post_id = p.id) AS cant_likes

@@ -1,5 +1,7 @@
 import db from "../db/db.js";
 import bcrypt from "bcrypt";
+import cloudinary from "../utils/cloudinary.js";
+import fs from "fs";
 
 export const login = async (req, res) => {
   try {
@@ -43,6 +45,21 @@ export const register = async (req, res) => {
   try {
     const { first_name, last_name, username, email, password } = req.body;
 
+    let image_url =
+      "https://www.researchgate.net/profile/Maria-Monreal/publication/315108532/figure/fig1/AS:472492935520261@1489662502634/Figura-2-Avatar-que-aparece-por-defecto-en-Facebook.png";
+
+    if (req.file) {
+      const imageResult = await cloudinary.uploader.upload(path, {
+        folder: "profileImage",
+      });
+
+      image_url = imageResult.secure_url;
+
+      fs.unlink(path, (err) => {
+        if (err) console.log("Error en eliminar el archivo temporal");
+      });
+    }
+
     const [rowEmail] = await db.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
@@ -67,9 +84,16 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const query =
-      "INSERT INTO users (first_name, last_name,username,email,password) VALUES (? ,? ,? ,? ,?)";
+      "INSERT INTO users (first_name, last_name,username,email,password, image_url) VALUES (? ,? ,? ,? ,?,?)";
 
-    const values = [first_name, last_name, username, email, hashedPassword];
+    const values = [
+      first_name,
+      last_name,
+      username,
+      email,
+      hashedPassword,
+      image_url,
+    ];
 
     await db.query(query, values);
 

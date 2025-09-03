@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 
 export const getAllUsers = async (req, res) => {
   const { username, email } = req.query;
-  console.log(email);
 
   try {
     let query = `SELECT 

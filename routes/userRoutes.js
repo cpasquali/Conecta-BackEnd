@@ -7,6 +7,9 @@ import {
   updateUser,
 } from "../controllers/userController.js";
 import { login, register } from "../controllers/authController.js";
+import multer from "multer";
+
+const upload = multer({ dest: "uploads/" });
 
 const routes = express.Router();
 
@@ -18,7 +21,7 @@ routes.post("/:id/delete", deleteUser);
 
 routes.post("/update/:id", updateUser);
 
-routes.post("/register", register);
+routes.post("/register", upload.single("image"), register);
 
 routes.post("/login", login);
 

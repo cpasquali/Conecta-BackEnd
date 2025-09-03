@@ -4,7 +4,7 @@ export const getCommentPost = async (req, res) => {
   const { postId } = req.params;
   try {
     const [rows] = await db.query(
-      "SELECT c.id,c.post_id,c.user_id,u.first_name,u.last_name,u.username,c.description,c.created_at FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE c.post_Id = ? ORDER BY created_at desc",
+      "SELECT c.id,c.post_id,c.user_id,u.first_name,u.last_name,u.username,c.description,c.created_at, u.image_url AS profile_img FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE c.post_Id = ? ORDER BY created_at desc",
       [postId]
     );
 
@@ -35,7 +35,7 @@ export const createComment = async (req, res) => {
     await db.query(query, values);
 
     const [rows] = await db.query(
-      "SELECT c.*, u.first_name, u.last_name, u.username FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE post_id = ? AND user_id = ? AND description = ?",
+      "SELECT c.*, u.first_name, u.last_name, u.username, u.image_url AS profile_img FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE post_id = ? AND user_id = ? AND description = ?",
       [postId, userId, description]
     );
 
