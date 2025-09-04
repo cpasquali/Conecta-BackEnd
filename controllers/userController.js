@@ -1,5 +1,7 @@
 import db from "../db/db.js";
 import bcrypt from "bcrypt";
+import cloudinary from "../utils/cloudinary.js";
+import fs from "fs";
 
 export const getAllUsers = async (req, res) => {
   const { username, email } = req.query;
@@ -48,28 +50,49 @@ export const updateUser = async (req, res) => {
   const { id } = req.params;
   try {
     const { first_name, last_name } = req.body;
-    let query = "";
     let values = [];
+    let updatesFields = [];
 
-    if (!first_name && !last_name) {
+    if (!first_name && !last_name && !req.file) {
       return res.status(404).json({
         message: "Se deben ingresar almenos uno de los datos para actualizar",
       });
     }
 
-    if (first_name && !last_name) {
-      query = "UPDATE users SET first_name = ? WHERE id = ?";
-      values.push(first_name, id);
-    } else if (!first_name && last_name) {
-      query = "UPDATE users SET last_name = ? WHERE id = ?";
-      values.push(last_name, id);
-    } else {
-      query = "UPDATE users SET first_name = ?, last_name = ? WHERE id = ?";
-      values.push(first_name, last_name, id);
+    if (first_name) {
+      updatesFields.push("first_name = ?");
+      values.push(first_name);
     }
-    await db.query(query, values);
 
-    return res.status(200).json({ message: "Actualizacion completada!!" });
+    if (last_name) {
+      updatesFields.push("last_name = ?");
+      values.push(last_name);
+    }
+
+    if (req.file) {
+      const imageResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "images",
+      });
+      const image_url = imageResult.secure_url;
+
+      updatesFields.push("image_url = ?");
+      values.push(image_url);
+
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.log("Error al eliminar el archivo");
+      });
+    }
+
+    await db.query(
+      `UPDATE users SET ${updatesFields.join(", ")} WHERE id = ?`,
+      [...values, id]
+    );
+
+    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
+
+    return res
+      .status(200)
+      .json({ message: "Actualizacion completada!!", updatedUser: rows[0] });
   } catch (e) {
     console.error(e.message);
     return res.status(500).json({ message: "Error en el servidor" });

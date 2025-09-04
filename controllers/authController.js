@@ -49,13 +49,13 @@ export const register = async (req, res) => {
       "https://www.researchgate.net/profile/Maria-Monreal/publication/315108532/figure/fig1/AS:472492935520261@1489662502634/Figura-2-Avatar-que-aparece-por-defecto-en-Facebook.png";
 
     if (req.file) {
-      const imageResult = await cloudinary.uploader.upload(path, {
+      const imageResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "profileImage",
       });
 
       image_url = imageResult.secure_url;
 
-      fs.unlink(path, (err) => {
+      fs.unlink(req.file.path, (err) => {
         if (err) console.log("Error en eliminar el archivo temporal");
       });
     }

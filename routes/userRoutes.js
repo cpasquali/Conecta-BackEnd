@@ -15,14 +15,14 @@ const routes = express.Router();
 
 routes.get("/", getAllUsers);
 
-routes.route("/:username").get(getUserByUsername);
-
-routes.post("/:id/delete", deleteUser);
-
-routes.post("/update/:id", updateUser);
+routes.post("/login", login);
 
 routes.post("/register", upload.single("image"), register);
 
-routes.post("/login", login);
+routes.post("/:id/delete", deleteUser);
+
+routes.patch("/update/:id", upload.single("image"), updateUser);
+
+routes.route("/:username").get(getUserByUsername);
 
 export default routes;
