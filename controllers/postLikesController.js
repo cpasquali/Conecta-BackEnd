@@ -26,7 +26,23 @@ export const addPostLike = async (req, res) => {
       user_id,
     ]);
 
-    return res.status(200).json({ message: "Like agregado" });
+    const [rows] = await db.query(
+      `SELECT p.*,
+	      u.first_name,u.last_name,u.username,u.image_url AS profile_img,
+	      (SELECT COUNT(*) FROM
+	      post_likes 
+	      WHERE post_id = p.id) AS cant_likes
+	      FROM posts p INNER JOIN users u ON p.user_id = u.id
+        WHERE p.id = ?
+      `,
+      [post_id]
+    );
+
+    const updatedPost = rows[0];
+
+    return res
+      .status(200)
+      .json({ message: "Te gusta la publicación", updatedPost: updatedPost });
   } catch (e) {
     return res.status(500).json({ message: "Error en el servidor" });
   }
@@ -40,7 +56,24 @@ export const deletePostLike = async (req, res) => {
       user_id,
     ]);
 
-    return res.status(200).json({ message: "Like eliminado" });
+    const [rows] = await db.query(
+      `SELECT p.*,
+	      u.first_name,u.last_name,u.username,u.image_url AS profile_img,
+	      (SELECT COUNT(*) FROM
+	      post_likes 
+	      WHERE post_id = p.id) AS cant_likes
+	      FROM posts p INNER JOIN users u ON p.user_id = u.id
+        WHERE p.id = ?
+      `,
+      [post_id]
+    );
+
+    const updatedPost = rows[0];
+
+    return res.status(200).json({
+      message: "Ya no te gusta la publicación",
+      updatedPost: updatedPost,
+    });
   } catch (e) {
     return res.status(500).json({ message: "Error en el servidor" });
   }
